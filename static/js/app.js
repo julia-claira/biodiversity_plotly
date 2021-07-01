@@ -10,14 +10,21 @@ d3.json("samples.json").then((importedData)=>{
     //Top 10 OTUs found in individual
     function topOTU(){
         var tempSampleValues=[];
+        
         for (i=0; i<10; i++){
-            console.log("");
-            tempSampleValues.push(data.samples[0].sample_values[i]);
+            var tempObject={};
+            tempObject['sample']=data.samples[0].sample_values[i];
+            tempObject['id']=data.samples[0].otu_ids[i];
+            tempObject['label']=data.samples[0].otu_labels[i];
+            //tempObject.push({id:data.samples[0].otu_ids[i]});
+            //tempObject.push({label:data.samples[0].otu_labels[i]});
+         
+            tempSampleValues.push(tempObject);
         }
 
         return tempSampleValues;
     };
-
+    //Main ------------------------------------------------
     console.log(topOTU());
 
 
