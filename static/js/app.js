@@ -1,7 +1,8 @@
+
 //read in the samples--------------------------------------
 d3.json("samples.json").then((importedData)=>{
     var data = importedData;
-    console.log(data.samples[0].sample_values[0]);
+    //console.log(data.samples[0].sample_values[0]);
 
 
 
@@ -24,24 +25,62 @@ d3.json("samples.json").then((importedData)=>{
 
         return tempSampleValues;
     };
+
+
+
+ 
     //Main ------------------------------------------------
-   
+    //The Filter Selection Form-----------------
+    var idField= d3.select("#selDataset");//
+    //idField.on("change", filterID);
+    
+    
     //Bar Graph
     var dataTopTen=topOTU();
     
+    //adds line breaks instead of semicolons for hover text
+    var theLabel=dataTopTen.map(row=> {
+        return row.label.split(';');
+    })
+    theLabel=theLabel.map(row =>row.join('<br>'));
+    theLabel.reverse();
+
+    //creates trace
     var trace1 = {
         type: 'bar',
+        mode: 'lines+markers',
         x: dataTopTen.map(row=>row.sample).reverse(),
         y: dataTopTen.map(row=>row.id.toString()).reverse(),
-        text: dataTopTen.map(row=>row.label).reverse(),
+        text: theLabel,//dataTopTen.map(row=>row.label),
+        hovertemplate: 
+        '<b>%{x}<b>'+
+        '<br>-------<br>'+
+        '<i>%{text}</i>'+
+        '<extra></extra>',
         orientation: 'h',
-    }
+    };
     var myData=[trace1];
 
+    //create layout and plot
     layout = {
-        title: "Top Ten OTUs",
+        title: {text:"Top Ten Bacteria Cultures Found",xanchor:'right'},
+        title_x: 0,
+        autosize: false,
+        width: 600,
+        height: 500,
+         margin: {
+            l: 70,
+            r: 200,
+            b: 100,
+            t: 30,
+            pad: 4
+        },
+        xanchor: 'left',
+        display:'none'
     }
-    Plotly.newPlot("bar", myData,layout);
-
-    console.log(trace1)
+    Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
+    Object.entries(data.samples).forEach(([key,value]) => {
+        idField.append("option").text(value.id).attr('value',key);
+    });
+    //send the value to function
 });
