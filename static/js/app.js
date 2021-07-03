@@ -11,41 +11,45 @@ d3.json("samples.json").then((importedData)=>{
     //Top 10 OTUs found in individual
     function topOTU(){
         var tempSampleValues=[];
+        var testSubject=idField.property("value");
         
         for (i=0; i<10; i++){
             var tempObject={};
-            tempObject['sample']=data.samples[0].sample_values[i];
-            tempObject['id']=`OTU ${data.samples[0].otu_ids[i]}`;
-            tempObject['label']=data.samples[0].otu_labels[i];
-            //tempObject.push({id:data.samples[0].otu_ids[i]});
-            //tempObject.push({label:data.samples[0].otu_labels[i]});
-            
+            tempObject['sample']=data.samples[testSubject].sample_values[i];
+            tempObject['id']=`OTU ${data.samples[testSubject].otu_ids[i]}`;
+            tempObject['label']=data.samples[testSubject].otu_labels[i];
+
             tempSampleValues.push(tempObject);
         }
-
+        console.log(tempSampleValues);
         return tempSampleValues;
     };
 
-
+    //function createBar(dataTopTen){}
 
  
     //Main ------------------------------------------------
-    //The Filter Selection Form-----------------
+    
+    //The Dropbox Selection
     var idField= d3.select("#selDataset");//
-    //idField.on("change", filterID);
+    Object.entries(data.samples).forEach(([key,value]) => {
+        idField.append("option").text(value.id).attr('value',key);
+    });
     
-    
-    //Bar Graph
+    idField.on("change", topOTU);
+    console.log(idField.property("value"));
+//-------move the below into a function
+     //Bar Graph
     var dataTopTen=topOTU();
     
-    //adds line breaks instead of semicolons for hover text
+    //Adds line breaks instead of semicolons for hover text
     var theLabel=dataTopTen.map(row=> {
         return row.label.split(';');
     })
     theLabel=theLabel.map(row =>row.join('<br>'));
     theLabel.reverse();
 
-    //creates trace
+    //Creates Trace
     var trace1 = {
         type: 'bar',
         mode: 'lines+markers',
@@ -61,7 +65,7 @@ d3.json("samples.json").then((importedData)=>{
     };
     var myData=[trace1];
 
-    //create layout and plot
+    //Layout and Plot
     layout = {
         title: {text:"Top Ten Bacteria Cultures Found",xanchor:'right'},
         title_x: 0,
@@ -79,8 +83,6 @@ d3.json("samples.json").then((importedData)=>{
         display:'none'
     }
     Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
-    Object.entries(data.samples).forEach(([key,value]) => {
-        idField.append("option").text(value.id).attr('value',key);
-    });
-    //send the value to function
+
+    
 });
