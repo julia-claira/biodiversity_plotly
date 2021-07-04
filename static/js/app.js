@@ -2,18 +2,18 @@
 //read in the samples--------------------------------------
 d3.json("samples.json").then((importedData)=>{
     var data = importedData;
-    //console.log(data.samples[0].sample_values[0]);
 
 
 
     //Functions------------------------------------------------
-
-     function topOTU(){
+    
+    //Pulls Graph Values
+    function pullGraphValues(){
         var tempSampleValues=[];//
         var testSubject=idField.property("value");//the index
         
-        //BAR GRAPH TOP TEN-----------------------------
-        //checks for samples with less than 10 rows of data
+        //BAR GRAPH VALUES
+        
         if(data.samples[testSubject].otu_ids.length<10){
             var count=data.samples[testSubject].otu_ids.length;
         }
@@ -32,7 +32,7 @@ d3.json("samples.json").then((importedData)=>{
         }
         createBar(tempSampleValues);//bar graph
 
-        //BUBBLE GRAPH----------------
+        //BUBBLE GRAPH VALUES
         tempSampleValues=[];
         count=data.samples[testSubject].otu_ids.length;
         
@@ -44,10 +44,20 @@ d3.json("samples.json").then((importedData)=>{
 
             tempSampleValues.push(tempObject);
          }
-         createBubble(tempSampleValues);//create bubble graph
+         createBubble(tempSampleValues);
+
+         //META GRAPH VALUES
+         var meta=d3.select("#sample-metadata");
+         var metaHTML="";
+
+         Object.entries(data.metadata[testSubject]).forEach(([key,value]) => {
+            metaHTML=metaHTML+`<p><b>${key}:</b> ${value}</p>`;
+         });
+         meta.node().innerHTML=metaHTML;
         
     };
 
+    //BAR GRAPH DRAW
     function createBar(dataTopTen){
     
         //Adds line breaks instead of semicolons for hover text
@@ -92,6 +102,7 @@ d3.json("samples.json").then((importedData)=>{
         Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
     };
 
+    //BUBBLE GRAPH DRAW
     function createBubble(sampleValues){
         var theIDs=sampleValues.map(row=>row.id);
         var theValues = sampleValues.map(row=>row.sample);
@@ -135,8 +146,6 @@ d3.json("samples.json").then((importedData)=>{
         }
         Plotly.newPlot("bubble", myData,layout,{displayModeBar: false});
 
-
-
     }
 
     //Main ------------------------------------------------
@@ -146,10 +155,10 @@ d3.json("samples.json").then((importedData)=>{
     Object.entries(data.samples).forEach(([key,value]) => {
         idField.append("option").text(value.id).attr('value',key);
     });
-    idField.on("change", topOTU);
+    idField.on("change", pullGraphValues);
 
     //pull data and initialize bar graph
-    topOTU();
+    pullGraphValues();
 
     
 });
