@@ -46,14 +46,17 @@ d3.json("samples.json").then((importedData)=>{
          }
          createBubble(tempSampleValues);
 
-         //META GRAPH VALUES
-         var meta=d3.select("#sample-metadata");
-         var metaHTML="";
-
-         Object.entries(data.metadata[testSubject]).forEach(([key,value]) => {
+        //META GRAPH VALUES AND PRINT
+        var meta=d3.select("#sample-metadata");
+        var metaHTML="";
+        var lastValue="";
+        Object.entries(data.metadata[testSubject]).forEach(([key,value]) => {
             metaHTML=metaHTML+`<p><b>${key}:</b> ${value}</p>`;
-         });
-         meta.node().innerHTML=metaHTML;
+            lastValue=value;//the last value in the metadata is washing frequency
+        });
+        meta.node().innerHTML=metaHTML;
+
+        createGauge(lastValue);//passes washing frequency into function for gauge
         
     };
 
@@ -148,6 +151,35 @@ d3.json("samples.json").then((importedData)=>{
 
     }
 
+    //GAUGE GRAPH DRAW
+    function createGauge(WashFreq){
+        var data = [
+            {
+            domain: { x: [0, 1], y: [0, 1] },
+            value: 450,
+            title: { text: "Belly Button Washing Frequency" },
+            type: "indicator",
+            mode: "gauge+number+delta",
+            delta: { reference: 380 },
+            gauge: {
+                axis: { range: [0, 9] },
+                steps: [
+                { range: [0, 250], color: "lightgray" },
+                { range: [250, 400], color: "gray" }
+                ],
+                threshold: {
+                line: { color: "red", width: 4 },
+                thickness: 0.75,
+                value: WashFreq
+                }
+            }
+            }
+        ];
+        
+        var layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+        Plotly.newPlot('gauge', data, layout);
+    }
+
     //Main ------------------------------------------------
     
     //The Dropbox Selection
@@ -157,7 +189,7 @@ d3.json("samples.json").then((importedData)=>{
     });
     idField.on("change", pullGraphValues);
 
-    //pull data and initialize bar graph
+    //pull data and initialize graphs
     pullGraphValues();
 
     
