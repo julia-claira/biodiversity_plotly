@@ -39,16 +39,12 @@ d3.json("samples.json").then((importedData)=>{
         for (i=0;i<count;i++){
             var tempObject={};
             tempObject['sample']=data.samples[testSubject].sample_values[i];
-            tempObject['id']=`OTU ${data.samples[testSubject].otu_ids[i]}`;
+            tempObject['id']=data.samples[testSubject].otu_ids[i];
             tempObject['label']=data.samples[testSubject].otu_labels[i];
 
             tempSampleValues.push(tempObject);
          }
          createBubble(tempSampleValues);//create bubble graph
-
-
-         
-        //DRAW GRAPHS
         
     };
 
@@ -66,7 +62,7 @@ d3.json("samples.json").then((importedData)=>{
             type: 'bar',
             x: dataTopTen.map(row=>row.sample).reverse(),
             y: dataTopTen.map(row=>row.id.toString()).reverse(),
-            text: theLabel,//dataTopTen.map(row=>row.label),
+            text: theLabel,
             hovertemplate: 
             '<b>%{x}<b>'+
             '<br>-------<br>'+
@@ -97,34 +93,47 @@ d3.json("samples.json").then((importedData)=>{
     };
 
     function createBubble(sampleValues){
-
+        var theIDs=sampleValues.map(row=>row.id);
+        var theValues = sampleValues.map(row=>row.sample);
+        //Adds line breaks instead of semicolons for hover text
+        var theLabel=sampleValues.map(row=> {
+            return row.label.split(';');
+        })
+        theLabel=theLabel.map(row =>row.join('<br>'));
+        
         //Creates Trace
         var trace1 = {
             mode: 'markers',
-            x: dataTopTen.map(row=>row.id.toString()),
-            y: dataTopTen.map(row=>row.sample),
-            //text: theLabel,//dataTopTen.map(row=>row.label),
+            x: theIDs,
+            y: theValues, 
+            marker: {
+                size: theValues,
+                color:theIDs,
+                colorscale: 'Portland',
+                sizeref: 2 * Math.max(...theValues)/(15**2),
+            },
+            text: theLabel,
+            hovertemplate: 
+            '<b>%{x}<b>'+
+            '<br>-------<br>'+
+            '<i>%{text}</i>'+
+            '<extra></extra>',
+            orientation: 'h',
         };
         var myData=[trace1];
 
         //Layout and Plot
         layout = {
-            title: {text:"Top Ten Bacteria Cultures Found",xanchor:'right'},
+            title: {text:"Bacteria Cultures Per Sample",xanchor:'center'},
             title_x: 0,
-            autosize: false,
-            width: 600,
-            height: 500,
-            margin: {
-                l: 70,
-                r: 200,
-                b: 100,
-                t: 30,
-                pad: 4
-            },
-            xanchor: 'left',
-            display:'none'
+            xaxis: {
+                title: {
+                  text: 'OTU ID',
+                }
+            }
+  
         }
-        Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
+        Plotly.newPlot("bubble", myData,layout,{displayModeBar: false});
 
 
 
