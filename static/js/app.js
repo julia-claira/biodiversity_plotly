@@ -156,16 +156,22 @@ d3.json("samples.json").then((importedData)=>{
         var data = [
             {
             domain: { x: [0, 1], y: [0, 1] },
-            value: 450,
+            value: WashFreq,
             title: { text: "Belly Button Washing Frequency" },
             type: "indicator",
-            mode: "gauge+number+delta",
-            delta: { reference: 380 },
+            mode: "gauge",
             gauge: {
                 axis: { range: [0, 9] },
                 steps: [
-                { range: [0, 250], color: "lightgray" },
-                { range: [250, 400], color: "gray" }
+                { range: [0, 1], color: "#E8F8F5"},
+                { range: [1, 2], color: "#D1F2EB" },
+                { range: [2, 3], color: "#D1F2EB" },
+                { range: [3, 4], color: "#D1F2EB" },
+                { range: [4, 5], color: "#D1F2EB" },
+                { range: [5, 6], color: "#D1F2EB" },
+                { range: [6, 7], color: "#D1F2EB" },
+                { range: [6, 7], color: "#D1F2EB" },
+                { range: [6, 7], color: "#D1F2EB" },
                 ],
                 threshold: {
                 line: { color: "red", width: 4 },
