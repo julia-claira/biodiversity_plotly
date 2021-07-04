@@ -3,8 +3,6 @@
 d3.json("samples.json").then((importedData)=>{
     var data = importedData;
 
-
-
     //Functions------------------------------------------------
     
     //Pulls Graph Values
@@ -165,13 +163,13 @@ d3.json("samples.json").then((importedData)=>{
                 steps: [
                 { range: [0, 1], color: "#E8F8F5"},
                 { range: [1, 2], color: "#D1F2EB" },
-                { range: [2, 3], color: "#D1F2EB" },
-                { range: [3, 4], color: "#D1F2EB" },
-                { range: [4, 5], color: "#D1F2EB" },
-                { range: [5, 6], color: "#D1F2EB" },
-                { range: [6, 7], color: "#D1F2EB" },
-                { range: [6, 7], color: "#D1F2EB" },
-                { range: [6, 7], color: "#D1F2EB" },
+                { range: [2, 3], color: "#A3E4D7" },
+                { range: [3, 4], color: "#76D7C4" },
+                { range: [4, 5], color: "#48C9B0" },
+                { range: [5, 6], color: "#1ABC9C" },
+                { range: [6, 7], color: "#17A589" },
+                { range: [7, 8], color: "#148F77" },
+                { range: [8, 9], color: "#117864" },
                 ],
                 threshold: {
                 line: { color: "red", width: 4 },
@@ -186,7 +184,7 @@ d3.json("samples.json").then((importedData)=>{
         Plotly.newPlot('gauge', data, layout);
     }
 
-    //Main ------------------------------------------------
+    //MAIN ------------------------------------------------
     
     //The Dropbox Selection
     var idField= d3.select("#selDataset");//
