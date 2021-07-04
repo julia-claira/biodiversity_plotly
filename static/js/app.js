@@ -8,9 +8,8 @@ d3.json("samples.json").then((importedData)=>{
 
     //Functions------------------------------------------------
 
-    
-    function topOTU(){
-        var tempSampleValues=[];
+     function topOTU(){
+        var tempSampleValues=[];//
         var testSubject=idField.property("value");//the index
         
         //BAR GRAPH TOP TEN-----------------------------
@@ -31,20 +30,26 @@ d3.json("samples.json").then((importedData)=>{
 
             tempSampleValues.push(tempObject);     
         }
+        createBar(tempSampleValues);//bar graph
 
         //BUBBLE GRAPH----------------
+        tempSampleValues=[];
         count=data.samples[testSubject].otu_ids.length;
+        
         for (i=0;i<count;i++){
             var tempObject={};
             tempObject['sample']=data.samples[testSubject].sample_values[i];
             tempObject['id']=`OTU ${data.samples[testSubject].otu_ids[i]}`;
             tempObject['label']=data.samples[testSubject].otu_labels[i];
 
+            tempSampleValues.push(tempObject);
+         }
+         createBubble(tempSampleValues);//create bubble graph
 
 
-        }
+         
         //DRAW GRAPHS
-        createBar(tempSampleValues);//bar graph
+        
     };
 
     function createBar(dataTopTen){
@@ -59,7 +64,6 @@ d3.json("samples.json").then((importedData)=>{
         //Creates Trace
         var trace1 = {
             type: 'bar',
-            mode: 'lines+markers',
             x: dataTopTen.map(row=>row.sample).reverse(),
             y: dataTopTen.map(row=>row.id.toString()).reverse(),
             text: theLabel,//dataTopTen.map(row=>row.label),
@@ -91,6 +95,40 @@ d3.json("samples.json").then((importedData)=>{
         }
         Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
     };
+
+    function createBubble(sampleValues){
+
+        //Creates Trace
+        var trace1 = {
+            mode: 'markers',
+            x: dataTopTen.map(row=>row.id.toString()),
+            y: dataTopTen.map(row=>row.sample),
+            //text: theLabel,//dataTopTen.map(row=>row.label),
+        };
+        var myData=[trace1];
+
+        //Layout and Plot
+        layout = {
+            title: {text:"Top Ten Bacteria Cultures Found",xanchor:'right'},
+            title_x: 0,
+            autosize: false,
+            width: 600,
+            height: 500,
+            margin: {
+                l: 70,
+                r: 200,
+                b: 100,
+                t: 30,
+                pad: 4
+            },
+            xanchor: 'left',
+            display:'none'
+        }
+        Plotly.newPlot("bar", myData,layout,{displayModeBar: false});
+
+
+
+    }
 
     //Main ------------------------------------------------
     
